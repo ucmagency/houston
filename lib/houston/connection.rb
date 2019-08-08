@@ -12,10 +12,10 @@ module Houston
     attr_reader :ssl, :socket, :certificate, :passphrase
 
     class << self
-      def open(uri, certificate, passphrase)
+      def open(uri, certificate, passphrase, certificate_pkey)
         return unless block_given?
 
-        connection = new(uri, certificate, passphrase)
+        connection = new(uri, certificate, passphrase, certificate_pkey)
         connection.open
 
         yield connection
@@ -25,10 +25,10 @@ module Houston
     end
 
     def initialize(uri, certificate, passphrase, certificate_pkey)
-      @uri = URI(uri)
-      @certificate = certificate.to_s
+      @uri              = URI(uri)
+      @certificate      = certificate.to_s
       @certificate_pkey = certificate_pkey.to_s
-      @passphrase = passphrase.to_s unless passphrase.nil?
+      @passphrase       = passphrase.to_s unless passphrase.nil?
     end
 
     def open
@@ -48,7 +48,7 @@ module Houston
     end
 
     def open?
-      not (@ssl && @socket).nil?
+      !(@ssl && @socket).nil?
     end
 
     def close
@@ -62,7 +62,7 @@ module Houston
     end
 
     def closed?
-      not open?
+      !open?
     end
   end
 end

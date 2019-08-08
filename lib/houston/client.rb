@@ -28,6 +28,7 @@ module Houston
       @gateway_uri = ENV['APN_GATEWAY_URI']
       @feedback_uri = ENV['APN_FEEDBACK_URI']
       @certificate = certificate_data
+      @certificate_pkey = certificate_pkey_data
       @passphrase = ENV['APN_CERTIFICATE_PASSPHRASE']
       @timeout = Float(ENV['APN_TIMEOUT'] || 0.5)
     end
@@ -37,7 +38,7 @@ module Houston
 
       notifications.flatten!
 
-      Connection.open(@gateway_uri, @certificate, @passphrase) do |connection|
+      Connection.open(@gateway_uri, @certificate, @passphrase, @certificate_pkey) do |connection|
         ssl = connection.ssl
 
         notifications.each_with_index do |notification, index|
@@ -86,6 +87,14 @@ module Houston
         File.read(ENV['APN_CERTIFICATE'])
       elsif ENV['APN_CERTIFICATE_DATA']
         ENV['APN_CERTIFICATE_DATA']
+      end
+    end
+
+    def certificate_pkey_data
+      if ENV['APN_CERTIFICATE_PKEY']
+        File.read(ENV['APN_CERTIFICATE_PKEY'])
+      elsif ENV['APN_CERTIFICATE_PKEY_DATA']
+        ENV['APN_CERTIFICATE_PKEY_DATA']
       end
     end
   end
